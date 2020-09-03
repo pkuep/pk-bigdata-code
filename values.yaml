@@ -1,0 +1,49 @@
+# values.yaml to overwrite default values
+
+scheduler:
+  image:
+    tag: 2.21.0  # Container image tag
+  serviceType: "LoadBalancer"
+  resources:
+    limits:
+      cpu: 1
+      memory: 4G
+    requests:
+      cpu: 1
+      memory: 4G
+
+worker:
+  image:
+    tag: 2.21.0  # Container image tag
+  replicas: 4  # Number of workers.
+  env:  # Environment variables.
+    - name: EXTRA_CONDA_PACKAGES
+      value: dask-ml shap fastparquet -c conda-forge
+    - name: EXTRA_PIP_PACKAGES
+      value: dask-lightgbm gcsfs --upgrade
+  resources:
+    limits:
+      cpu: 2
+      memory: 1G
+    requests:
+      cpu: 2
+      memory: 1G
+
+jupyter:
+  image:
+    tag: 2.21.0  # Container image tag
+  serviceType: "LoadBalancer"
+  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c' # Password hash. Default hash corresponds to the password `dask`.
+  # We want to keep the same packages on the worker and jupyter environments
+  env:  # Environment variables.
+    - name: EXTRA_CONDA_PACKAGES
+      value: dask-ml shap fastparquet -c conda-forge
+    - name: EXTRA_PIP_PACKAGES
+      value: dask-lightgbm gcsfs --upgrade
+  resources:
+    limits:
+      cpu: 2
+      memory: 4G
+    requests:
+      cpu: 2
+      memory: 4G
